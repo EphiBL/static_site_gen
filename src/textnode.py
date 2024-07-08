@@ -10,5 +10,6 @@ class TextNode:
         else:
             return False
 
+
     def __repr__(self):
         return f"Textnode({self.text}, {self.text_type}, {self.url})"
