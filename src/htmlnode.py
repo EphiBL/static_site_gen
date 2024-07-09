@@ -18,8 +18,7 @@ class HTMLNode:
     def props_to_html(self):
         html = ''
         for k, v in self.props.items():
-            stripped_k = k.strip('"')
-            html = html + f' {stripped_k}="{v}"'
+            html = html + f' {k}="{v}"'
         return html
 
     def __repr__(self):
