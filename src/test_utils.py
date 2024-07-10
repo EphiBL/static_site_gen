@@ -66,8 +66,27 @@ class TestSplitNodesDelimiter(unittest.TestCase):
         ]
         self.assertEqual(result3, expected)
 
+    def test_split_nodes_delimiter_multiple(self):
+        node = TextNode("Normal *italic* normal **bold** normal", "text")
+        result = split_nodes_delimiter([node], "*", "italic")
+        expected = [
+            TextNode("Normal ", "text"),
+            TextNode("italic", "italic"),
+            TextNode(" normal **bold** normal", "text"),
+        ]
+        self.assertEqual(result, expected)
+
+    def test_split_nodes_delimiter_mixed(self):
+        node = TextNode("This is **bold** and *italic* text", "text")
+        result = split_nodes_delimiter([node], "**", "bold")
+        expected = [
+            TextNode("This is ", "text"),
+            TextNode("bold", "bold"),
+            TextNode(" and *italic* text", "text"),
+        ]
+        self.assertEqual(result, expected)
+
 if __name__ == "__main__":
     unittest.main()
-
 
 
