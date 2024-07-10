@@ -1,4 +1,5 @@
 from leafnode import LeafNode
+from textnode import TextNode
 
 TEXT_TYPES = {
     'text_type_text' : 'text',
@@ -32,3 +33,33 @@ def text_node_to_html_node(text_node):
     raise Exception("Unhandled conversion of text_node text_type")
 
 
+# Only for code, bold, italic text
+def split_nodes_delimiter(old_nodes, delimiter, text_type):
+    processed_nodes = []
+
+    for node in old_nodes:
+        if node.text_type != 'text':
+            processed_nodes.append(node)
+        else:
+            split_text = node.text.split(delimiter)
+            if len(split_text) <= 1:
+                processed_nodes.append(node)
+            else:
+                processed_substrings = []
+                if len(split_text) % 2 == 0:
+                    raise Exception("Even # of elements post-split, no matching delimiter found")
+                for i in range (0, len(split_text)):
+                    if i % 2 == 0:
+                        if split_text[i] != "":
+                            new_node = TextNode(split_text[i], "text")
+                            processed_substrings.append(new_node)
+                    else:
+                        new_node = TextNode(split_text[i], text_type)
+                        processed_substrings.append(new_node)
+                processed_nodes.extend(processed_substrings)
+
+    return processed_nodes
+
+
+
+        

@@ -18,7 +18,6 @@ class ParentNode(HTMLNode):
             parent_open = f"<{self.tag}{parent_props}>"
             parent_close = f"</{self.tag}>"
 
-
             for node in self.children:
                 children_html = children_html + node.to_html()
 
