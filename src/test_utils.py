@@ -1,5 +1,5 @@
 import unittest
-from sitegen_utils import split_nodes_delimiter
+from sitegen_utils import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
 from textnode import TextNode
 
 
@@ -94,10 +94,16 @@ class TestSplitNodesDelimiter(unittest.TestCase):
 
 class TestLinkImageExtraction(unittest.TestCase):
     def test_extract_markdown_images(self):
-        pass
+        text = "This is an ![image](https://example.com/image.jpg) in text."
+        result = extract_markdown_images(text)
+        expected = [("image", "https://example.com/image.jpg")]
+        self.assertEqual(result, expected)
 
     def test_extract_markdown_links(self):
-        pass
+        text = "This is a [link](https://example.com) in text."
+        result = extract_markdown_links(text)
+        expected = [("link", "https://example.com")]
+        self.assertEqual(result, expected)
 
 
 if __name__ == "__main__":
