@@ -105,6 +105,15 @@ class TestLinkImageExtraction(unittest.TestCase):
         expected = [("link", "https://example.com")]
         self.assertEqual(result, expected)
 
+    def test_extract_markdown_links_and_images(self):
+        text = "This is a [link](https://example.com) and an ![image](https://example.com/image.jpg) in the same text."
+        link_result = extract_markdown_links(text)
+        image_result = extract_markdown_images(text)
+        expected_links = [("link", "https://example.com")]
+        expected_images = [("image", "https://example.com/image.jpg")]
+        self.assertEqual(link_result, expected_links)
+        self.assertEqual(image_result, expected_images)
+
 
 if __name__ == "__main__":
     unittest.main()
