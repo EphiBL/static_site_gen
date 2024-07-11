@@ -92,6 +92,14 @@ class TestSplitNodesDelimiter(unittest.TestCase):
         ]
         self.assertEqual(result2, expected)
 
+class TestLinkImageExtraction(unittest.TestCase):
+    def test_extract_markdown_images(self):
+        pass
+
+    def test_extract_markdown_links(self):
+        pass
+
+
 if __name__ == "__main__":
     unittest.main()
 

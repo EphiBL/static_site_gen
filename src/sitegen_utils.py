@@ -1,5 +1,6 @@
 from leafnode import LeafNode
 from textnode import TextNode
+import re
 
 TEXT_TYPES = {
     'text_type_text' : 'text',
@@ -59,6 +60,17 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                 processed_nodes.extend(processed_substrings)
 
     return processed_nodes
+
+# Extract Images
+def extract_markdown_images(text):
+    matches = re.findall(r'!\[(.*?)\]\((.*?)\)' ,text)
+    return matches
+
+# Extract links
+def extract_markdown_links(text):
+    matches = re.findall(r'\[(.*?)\]\((.*?)\)' ,text)
+    return matches
+
 
 
 
