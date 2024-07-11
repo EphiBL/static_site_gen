@@ -118,6 +118,19 @@ class TestLinkImageExtraction(unittest.TestCase):
         self.assertNotIn(("image", "https://example.com/image.jpg"), link_result)
         self.assertNotIn(("link", "https://example.com"), image_result)
 
+    def test_extract_markdown_images_before_links(self):
+        text = "This is an ![image](https://example.com/image.jpg) and a [link](https://example.com) in the same text."
+        image_result = extract_markdown_images(text)
+        link_result = extract_markdown_links(text)
+        expected_images = [("image", "https://example.com/image.jpg")]
+        expected_links = [("link", "https://example.com")]
+        self.assertEqual(image_result, expected_images)
+        self.assertEqual(link_result, expected_links)
+        
+        # Additional test to ensure images are not picked up as links and vice versa
+        self.assertNotIn(("link", "https://example.com"), image_result)
+        self.assertNotIn(("image", "https://example.com/image.jpg"), link_result)
+
 
 if __name__ == "__main__":
     unittest.main()
