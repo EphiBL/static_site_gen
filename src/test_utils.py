@@ -113,6 +113,10 @@ class TestLinkImageExtraction(unittest.TestCase):
         expected_images = [("image", "https://example.com/image.jpg")]
         self.assertEqual(link_result, expected_links)
         self.assertEqual(image_result, expected_images)
+        
+        # Additional test to ensure links are not picked up as images and vice versa
+        self.assertNotIn(("image", "https://example.com/image.jpg"), link_result)
+        self.assertNotIn(("link", "https://example.com"), image_result)
 
 
 if __name__ == "__main__":
