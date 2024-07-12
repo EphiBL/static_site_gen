@@ -1,6 +1,6 @@
 import unittest
-from sitegen_utils import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_images, split_nodes_links
-# import sitegen_utils
+from utils import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_images, split_nodes_links
+import utils
 from textnode import TextNode
 
 
@@ -11,7 +11,7 @@ def test_text_node_to_html_node():
 class TestSplitNodesDelimiter(unittest.TestCase):
     def test_split_nodes_delimiter_basic(self):
         nodes = [TextNode("This is `code` text", "text")]
-        result = split_nodes_delimiter(nodes, "`", "code")
+        result = utils.split_nodes_delimiter(nodes, "`", "code")
         expected = [
             TextNode("This is ", "text"),
             TextNode("code", "code"),
