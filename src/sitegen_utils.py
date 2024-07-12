@@ -70,7 +70,7 @@ def extract_markdown_links(text):
     matches = re.findall(r'(?<!!)\[(.*?)\]\((.*?)\)', text)
     return matches
 
-def split_nodes_image(old_nodes):
+def split_nodes_images(old_nodes):
     processed_nodes = []
     for node in old_nodes:
         if node.text_type != 'text':
@@ -89,15 +89,19 @@ def split_nodes_image(old_nodes):
                             new_split.append(part)
                         else:
                             before, after = part.split(img_markdown, 1)
-                            new_split.extend([before, img_markdown, after])
+                            new_split.extend([before, '', after])
                     split_text = new_split
-                for part in split_text:
-                    if part.startswith('![') and part.endswith(')'):
-                        alt_text, url = extract_markdown_images(part)[0]
-                        processed_nodes.append(TextNode(alt_text, "image", url))
+                img_index = 0
+                for i in range(0, len(split_text)):
+                    if i % 2 == 0:
+                        node = TextNode(split_text[i], "text")
+                        processed_nodes.append(node)
                     else:
-                        processed_nodes.append(TextNode(part, "text"))
+                        node = TextNode(img_text[img_index][0], "image", img_text[img_index][1])
+                        processed_nodes.append(node)
+                        img_index += 1
     return processed_nodes
+
 
 def split_nodes_links(old_nodes):
     processed_nodes = []
@@ -118,14 +122,17 @@ def split_nodes_links(old_nodes):
                             new_split.append(part)
                         else:
                             before, after = part.split(link_markdown, 1)
-                            new_split.extend([before, link_markdown, after])
+                            new_split.extend([before, '', after])
                     split_text = new_split
-                for part in split_text:
-                    if part.startswith('[') and part.endswith(')'):
-                        title, url = extract_markdown_links(part)[0]
-                        processed_nodes.append(TextNode(title, "link", url))
+                link_index = 0
+                for i in range(0, len(split_text)):
+                    if i % 2 == 0:
+                        node = TextNode(split_text[i], "text")
+                        processed_nodes.append(node)
                     else:
-                        processed_nodes.append(TextNode(part, "text"))
+                        node = TextNode(link_text[link_index][0], "link", link_text[link_index][1])
+                        processed_nodes.append(node)
+                        link_index += 1
     return processed_nodes
 
 
