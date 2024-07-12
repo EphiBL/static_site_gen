@@ -143,12 +143,26 @@ class TestLinkImageExtraction(unittest.TestCase):
         self.assertNotIn(("link", "https://example.com"), image_result)
         self.assertNotIn(("image", "https://example.com/image.jpg"), link_result)
 
-class TestSplitNodesLinksImages(unittext.TestCase):
+class TestSplitNodesLinksImages(unittest.TestCase):
     def test_split_nodes_images(self):
-        pass
+        nodes = [TextNode("This is an ![image](https://example.com/image.jpg) in text.", "text")]
+        result = split_nodes_image(nodes)
+        expected = [
+            TextNode("This is an ", "text"),
+            TextNode("image", "image", "https://example.com/image.jpg"),
+            TextNode(" in text.", "text")
+        ]
+        self.assertEqual(result, expected)
 
     def test_split_nodes_links(self):
-        pass
+        nodes = [TextNode("This is a [link](https://example.com) in text.", "text")]
+        result = split_nodes_links(nodes)
+        expected = [
+            TextNode("This is a ", "text"),
+            TextNode("link", "link", "https://example.com"),
+            TextNode(" in text.", "text")
+        ]
+        self.assertEqual(result, expected)
 
 if __name__ == "__main__":
     unittest.main()
