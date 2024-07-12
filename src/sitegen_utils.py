@@ -89,15 +89,14 @@ def split_nodes_image(old_nodes):
                             new_split.append(part)
                         else:
                             before, after = part.split(img_markdown, 1)
-                            new_split.extend([before, '', after])
+                            new_split.extend([before, img_markdown, after])
                     split_text = new_split
-                for i in range(0, len(split_text)):
-                    if i % 2 == 0:
-                        node = TextNode(split_text[i], "text")
-                        processed_nodes.append(node)
+                for part in split_text:
+                    if part.startswith('![') and part.endswith(')'):
+                        alt_text, url = extract_markdown_images(part)[0]
+                        processed_nodes.append(TextNode(alt_text, "image", url))
                     else:
-                        node = TextNode(img_text[i][0], "image", img_text[i][1])
-                        processed_nodes.append(node)
+                        processed_nodes.append(TextNode(part, "text"))
     return processed_nodes
 
 def split_nodes_links(old_nodes):
@@ -119,15 +118,14 @@ def split_nodes_links(old_nodes):
                             new_split.append(part)
                         else:
                             before, after = part.split(link_markdown, 1)
-                            new_split.extend([before, '', after])
+                            new_split.extend([before, link_markdown, after])
                     split_text = new_split
-                for i in range(0, len(split_text)):
-                    if i % 2 == 0:
-                        node = TextNode(split_text[i], "text")
-                        processed_nodes.append(node)
+                for part in split_text:
+                    if part.startswith('[') and part.endswith(')'):
+                        title, url = extract_markdown_links(part)[0]
+                        processed_nodes.append(TextNode(title, "link", url))
                     else:
-                        node = TextNode(link_text[i][0], "link", link_text[i][1])
-                        processed_nodes.append(node)
+                        processed_nodes.append(TextNode(part, "text"))
     return processed_nodes
 
 
