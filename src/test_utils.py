@@ -145,9 +145,13 @@ class TestLinkImageExtraction(unittest.TestCase):
         self.assertNotIn(("image", "https://example.com/image.jpg"), link_result)
 
 class TestSplitNodesLinksImages(unittest.TestCase):
+    basic_img_node = [TextNode("This is an ![image](https://example.com/image.jpg) in text.", "text")]
+    basic_link_node = [TextNode("This is a [link](https://example.com) in text.", "text")]
+    double_img_node = [TextNode("This is an ![image](https://example.com/image.jpg) in text, with another ![image2](https://google.com/image.jpg) as well", "text")]
+    double_link_node = [TextNode("This is a [link](https://example.com) in text, with another [link2](https://google.com) as well", "text")]
+
     def test_split_nodes_images(self):
-        nodes = [TextNode("This is an ![image](https://example.com/image.jpg) in text.", "text")]
-        result = split_nodes_images(nodes)
+        result = split_nodes_images(self.basic_img_node)
         expected = [
             TextNode("This is an ", "text"),
             TextNode("image", "image", "https://example.com/image.jpg"),
@@ -156,14 +160,80 @@ class TestSplitNodesLinksImages(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_split_nodes_links(self):
-        nodes = [TextNode("This is a [link](https://example.com) in text.", "text")]
-        result = split_nodes_links(nodes)
+        result = split_nodes_links(self.basic_link_node)
         expected = [
             TextNode("This is a ", "text"),
             TextNode("link", "link", "https://example.com"),
             TextNode(" in text.", "text")
         ]
         self.assertEqual(result, expected)
+
+    def test_concurrent_split_link_image(self):
+        nodes = self.basic_link_node + self.basic_img_node
+        result1 = split_nodes_links(nodes)
+        result2 = split_nodes_images(result1)
+        expected = [
+            TextNode("This is a ", "text"),
+            TextNode("link", "link", "https://example.com"),
+            TextNode(" in text.", "text"),
+            TextNode("This is an ", "text"),
+            TextNode("image", "image", "https://example.com/image.jpg"),
+            TextNode(" in text.", "text"),
+        ]
+        self.assertEqual(result2, expected)
+
+    def test_concurrent_split_link_image_reversed(self):
+        nodes = self.basic_link_node + self.basic_img_node
+        result1 = split_nodes_images(nodes)
+        result2 = split_nodes_links(result1)
+        expected = [
+            TextNode("This is a ", "text"),
+            TextNode("link", "link", "https://example.com"),
+            TextNode(" in text.", "text"),
+            TextNode("This is an ", "text"),
+            TextNode("image", "image", "https://example.com/image.jpg"),
+            TextNode(" in text.", "text"),
+        ]
+        self.assertEqual(result2, expected)
+    
+    def test_concurrent_split_link_images_alt_order(self):
+        nodes = self.basic_img_node + self.basic_link_node
+        result1 = split_nodes_images(nodes)
+        result2 = split_nodes_links(result1)
+        expected = [
+            TextNode("This is an ", "text"),
+            TextNode("image", "image", "https://example.com/image.jpg"),
+            TextNode(" in text.", "text"),
+            TextNode("This is a ", "text"),
+            TextNode("link", "link", "https://example.com"),
+            TextNode(" in text.", "text"),
+        ]
+        self.assertEqual(result2, expected)
+
+    def test_concurrent_split_link_images_alt_order_reversed(self):
+        nodes = self.basic_img_node + self.basic_link_node
+        result1 = split_nodes_links(nodes)
+        result2 = split_nodes_images(result1)
+        expected = [
+            TextNode("This is an ", "text"),
+            TextNode("image", "image", "https://example.com/image.jpg"),
+            TextNode(" in text.", "text"),
+            TextNode("This is a ", "text"),
+            TextNode("link", "link", "https://example.com"),
+            TextNode(" in text.", "text"),
+        ]
+        self.assertEqual(result2, expected)
+
+    def test_split_nodes_images(self):
+        result = split_nodes_images(self.double_img_node)
+        expected = [
+            TextNode("This is an ", "text"),
+            TextNode("image", "image", "https://example.com/image.jpg"),
+            TextNode(" in text, with another ", "text"),
+            TextNode("image2", "image", "https://google.com/image.jpg"),
+            TextNode(" as well", "text")
+        ]
+
 
 if __name__ == "__main__":
     unittest.main()
