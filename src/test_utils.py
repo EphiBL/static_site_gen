@@ -234,6 +234,17 @@ class TestSplitNodesLinksImages(unittest.TestCase):
             TextNode(" as well", "text")
         ]
 
+    def test_split_nodes_links_doubled(self):
+        result = split_nodes_links(self.double_link_node)
+        expected = [
+            TextNode("This is a ", "text"),
+            TextNode("link", "link", "https://example.com"),
+            TextNode(" in text, with another ", "text"),
+            TextNode("link2", "link", "https://google.com"),
+            TextNode(" as well", "text")
+        ]
+        self.assertEqual(result, expected)
+
 
 if __name__ == "__main__":
     unittest.main()
