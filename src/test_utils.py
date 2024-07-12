@@ -143,6 +143,12 @@ class TestLinkImageExtraction(unittest.TestCase):
         self.assertNotIn(("link", "https://example.com"), image_result)
         self.assertNotIn(("image", "https://example.com/image.jpg"), link_result)
 
+class TestSplitNodesLinksImages(unittext.TestCase):
+    def test_split_nodes_images(self):
+        pass
+
+    def test_split_nodes_links(self):
+        pass
 
 if __name__ == "__main__":
     unittest.main()
