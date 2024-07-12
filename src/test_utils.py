@@ -92,6 +92,18 @@ class TestSplitNodesDelimiter(unittest.TestCase):
         ]
         self.assertEqual(result2, expected)
 
+    def test_split_nodes_delimiter_double(self):
+        nodes = [TextNode("This is **bold** and **bold** text", "text")]
+        result = split_nodes_delimiter(nodes, "**", "bold")
+        expected = [
+            TextNode("This is ", "text"),
+            TextNode("bold", "bold"),
+            TextNode(" and ", "text"),
+            TextNode("bold", "bold"),
+            TextNode(" text", "text")
+        ]
+        self.assertEqual(result, expected)
+
 class TestLinkImageExtraction(unittest.TestCase):
     def test_extract_markdown_images(self):
         text = "This is an ![image](https://example.com/image.jpg) in text."

@@ -37,7 +37,6 @@ def text_node_to_html_node(text_node):
 # Only for code, bold, italic text
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     processed_nodes = []
-
     for node in old_nodes:
         if node.text_type != 'text':
             processed_nodes.append(node)
@@ -71,6 +70,82 @@ def extract_markdown_links(text):
     matches = re.findall(r'(?<!!)\[(.*?)\]\((.*?)\)', text)
     return matches
 
+def split_nodes_image(old_nodes):
+    processed_nodes = []
+    for node in old_nodes:
+        if node.text_type != 'text':
+            processed_nodes.append(node)
+        else:
+            img_text: list = extract_markdown_images(node.text)
+            if len(img_text) == 0:
+                processed_nodes.append(node)
+            else:
+                split_text = [node.text]
+                for alt_text, url in img_text:
+                    img_markdown = f'![{alt_text}]({url})'
+                    new_split = []
+                    for part in split_text:
+                        if img_markdown not in part:
+                            new_split.append(part)
+                        else:
+                            before, after = part.split(img_markdown, 1)
+                            new_split.extend([before, '', after])
+                    split_text = new_split
+                for i in range(0, len(split_text)):
+                    if i % 2 == 0:
+                        node = TextNode(split_text[i], "text")
+                        processed_nodes.append(node)
+                    else:
+                        node = TextNode(img_text[i][0], "image", img_text[i][1])
+                        processed_nodes.append(node)
+    return processed_nodes
+
+def split_nodes_links(old_nodes):
+    processed_nodes = []
+    for node in old_nodes:
+        if node.text_type != 'text':
+            processed_nodes.append(node)
+        else:
+            link_text: list = extract_markdown_links(node.text)
+            if len(link_text) == 0:
+                processed_nodes.append(node)
+            else:
+                split_text = [node.text]
+                for title, url in link_text:
+                    link_markdown = f'[{title}]({url})'
+                    new_split = []
+                    for part in split_text:
+                        if link_markdown not in part:
+                            new_split.append(part)
+                        else:
+                            before, after = part.split(link_markdown, 1)
+                            new_split.extend([before, '', after])
+                    split_text = new_split
+                for i in range(0, len(split_text)):
+                    if i % 2 == 0:
+                        node = TextNode(split_text[i], "text")
+                        processed_nodes.append(node)
+                    else:
+                        node = TextNode(link_text[i][0], "link", link_text[i][1])
+                        processed_nodes.append(node)
+    return processed_nodes
+
+
+                # processed_substrings = []
+                # img_text_sequential = []
+                # for i in range (0, len(img_text)):
+                #     img_text_sequential.append(img_text[i][0])
+                #     img_text_sequential.append(img_text[i][1])
+                # split_text = node.text.split(f'![{}]')
+
+
+
+            
+
+#     pass
+
+# def split_nodes_link(old_nodes):
+#     pass
 
 
 
