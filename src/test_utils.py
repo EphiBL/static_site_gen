@@ -224,7 +224,7 @@ class TestSplitNodesLinksImages(unittest.TestCase):
         ]
         self.assertEqual(result2, expected)
 
-    def test_split_nodes_images(self):
+    def test_split_nodes_images_doubled(self):
         result = split_nodes_images(self.double_img_node)
         expected = [
             TextNode("This is an ", "text"),
