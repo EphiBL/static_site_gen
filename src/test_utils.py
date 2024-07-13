@@ -279,6 +279,25 @@ class TestSplitNodesLinksImages(unittest.TestCase):
         self.assertEqual(result2, expected)
 
 
+class TestTextToTextNodes(unittest.TestCase):
+    def test_text_to_text_nodes_basic(self):
+        text = "This is **bold** and *italic* text with `code` and a [link](https://example.com) and an ![image](https://example.com/image.jpg)."
+        result = utils.text_to_text_nodes(text)
+        expected = [
+            TextNode("This is ", "text"),
+            TextNode("bold", "bold"),
+            TextNode(" and ", "text"),
+            TextNode("italic", "italic"),
+            TextNode(" text with ", "text"),
+            TextNode("code", "code"),
+            TextNode(" and a ", "text"),
+            TextNode("link", "link", "https://example.com"),
+            TextNode(" and an ", "text"),
+            TextNode("image", "image", "https://example.com/image.jpg"),
+            TextNode(".", "text")
+        ]
+        self.assertEqual(result, expected)
+
 if __name__ == "__main__":
     unittest.main()
 

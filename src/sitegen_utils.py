@@ -137,13 +137,13 @@ def split_nodes_links(old_nodes):
 
 
 def text_to_text_nodes(text):
-    code = split_nodes_delimiter([text], '`', 'code')
-    bold = split_nodes_delimiter([code], '**', 'bold')
-    italics = split_nodes_delimiter([bold], '*', 'italic')
-    images = split_nodes_images([italics])
-    links = split_nodes_images([images])
-
-    return links
+    nodes = [TextNode(text, "text")]
+    nodes = split_nodes_delimiter(nodes, "`", "code")
+    nodes = split_nodes_delimiter(nodes, "**", "bold")
+    nodes = split_nodes_delimiter(nodes, "*", "italic")
+    nodes = split_nodes_images(nodes)
+    nodes = split_nodes_links(nodes)
+    return nodes
 
 
 
