@@ -298,6 +298,74 @@ class TestTextToTextNodes(unittest.TestCase):
         ]
         self.assertEqual(result, expected)
 
+    def test_nested_formatting(self):
+        text = "This is **bold *and italic*** text."
+        result = utils.text_to_text_nodes(text)
+        expected = [
+            TextNode("This is ", "text"),
+            TextNode("bold ", "bold"),
+            TextNode("and italic", "italic"),
+            TextNode(" text.", "text")
+        ]
+        self.assertEqual(result, expected)
+
+    def test_code_with_formatting(self):
+        text = "This is `code with **bold** and *italic*` inside."
+        result = utils.text_to_text_nodes(text)
+        expected = [
+            TextNode("This is ", "text"),
+            TextNode("code with **bold** and *italic*", "code"),
+            TextNode(" inside.", "text")
+        ]
+        self.assertEqual(result, expected)
+
+    def test_links_and_images_with_formatting(self):
+        text = "Check this [**bold** link](https://example.com) and ![*italic* image](https://example.com/image.jpg)"
+        result = utils.text_to_text_nodes(text)
+        expected = [
+            TextNode("Check this ", "text"),
+            TextNode("**bold** link", "link", "https://example.com"),
+            TextNode(" and ", "text"),
+            TextNode("*italic* image", "image", "https://example.com/image.jpg")
+        ]
+        self.assertEqual(result, expected)
+
+    def test_multiple_formatting_in_text(self):
+        text = "This is *italic*, **bold**, `code`, and ***bold italic*** text."
+        result = utils.text_to_text_nodes(text)
+        expected = [
+            TextNode("This is ", "text"),
+            TextNode("italic", "italic"),
+            TextNode(", ", "text"),
+            TextNode("bold", "bold"),
+            TextNode(", ", "text"),
+            TextNode("code", "code"),
+            TextNode(", and ", "text"),
+            TextNode("bold italic", "bold"),
+            TextNode(" text.", "text")
+        ]
+        self.assertEqual(result, expected)
+
+    def test_empty_formatting(self):
+        text = "This has empty ** ** formatting."
+        result = utils.text_to_text_nodes(text)
+        expected = [
+            TextNode("This has empty ", "text"),
+            TextNode("", "bold"),
+            TextNode(" formatting.", "text")
+        ]
+        self.assertEqual(result, expected)
+
+    def test_url_in_link_text(self):
+        text = "Here's a [link with a URL](https://example.com/page?param=value) in it."
+        result = utils.text_to_text_nodes(text)
+        expected = [
+            TextNode("Here's a ", "text"),
+            TextNode("link with a URL", "link", "https://example.com/page?param=value"),
+            TextNode(" in it.", "text")
+        ]
+        self.assertEqual(result, expected)
+
 if __name__ == "__main__":
     unittest.main()
 
