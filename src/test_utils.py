@@ -380,13 +380,52 @@ class TestBlockToBlockType(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_block_to_block_type_other_type(self):
-        pass
+        markdown = "This is a paragraph"
+        result = block_to_block_type(markdown)
+        expected = 'paragraph'
+        self.assertEqual(result, expected)
 
     def test_block_to_block_type_ordered_list(self):
-        pass
+        markdown = "1. First item"
+        result = block_to_block_type(markdown)
+        expected = 'ordered_list_1'
+        self.assertEqual(result, expected)
 
     def test_block_to_block_type_unclosed_codeblock(self):
-        pass
+        markdown = "```python\nprint('Hello, World!')"
+        with self.assertRaises(ValueError):
+            block_to_block_type(markdown)
+
+    def test_block_to_block_type_unordered_list(self):
+        markdown = "- Bullet point"
+        result = block_to_block_type(markdown)
+        expected = 'unordered_list'
+        self.assertEqual(result, expected)
+
+    def test_block_to_block_type_quote(self):
+        markdown = "> This is a quote"
+        result = block_to_block_type(markdown)
+        expected = 'quote'
+        self.assertEqual(result, expected)
+
+    def test_block_to_block_type_code_block(self):
+        markdown = "```python\nprint('Hello, World!')\n```"
+        result = block_to_block_type(markdown)
+        expected = 'code'
+        self.assertEqual(result, expected)
+
+    def test_block_to_block_type_heading_levels(self):
+        for i in range(1, 7):
+            markdown = "#" * i + f" H{i} Heading"
+            result = block_to_block_type(markdown)
+            expected = f'H{i}'
+            self.assertEqual(result, expected)
+
+    def test_block_to_block_type_excessive_heading(self):
+        markdown = "####### This should be H6"
+        result = block_to_block_type(markdown)
+        expected = 'H6'
+        self.assertEqual(result, expected)
 
 
 
