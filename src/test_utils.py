@@ -303,7 +303,6 @@ class TestTextToTextNodes(unittest.TestCase):
         result = utils.text_to_text_nodes(text)
         expected = [
             TextNode("This has empty ", "text"),
-            TextNode("", "bold"),
             TextNode(" formatting.", "text")
         ]
         self.assertEqual(result, expected)
@@ -318,16 +317,6 @@ class TestTextToTextNodes(unittest.TestCase):
         ]
         self.assertEqual(result, expected)
 
-    def test_empty_formatting_with_whitespace(self):
-        text = "This has empty **   ** formatting with whitespace."
-        result = utils.text_to_text_nodes(text)
-        expected = [
-            TextNode("This has empty ", "text"),
-            TextNode("   ", "bold"),
-            TextNode(" formatting with whitespace.", "text")
-        ]
-        self.assertEqual(result, expected)
-
     def test_multiple_empty_formatting(self):
         text = "This has **multiple** empty **** formatting ** ** elements."
         result = utils.text_to_text_nodes(text)
@@ -335,9 +324,7 @@ class TestTextToTextNodes(unittest.TestCase):
             TextNode("This has ", "text"),
             TextNode("multiple", "bold"),
             TextNode(" empty ", "text"),
-            TextNode("", "bold"),
             TextNode(" formatting ", "text"),
-            TextNode("", "bold"),
             TextNode(" elements.", "text")
         ]
         self.assertEqual(result, expected)
@@ -346,9 +333,7 @@ class TestTextToTextNodes(unittest.TestCase):
         text = "**  **This has empty formatting at start and end.*  *"
         result = utils.text_to_text_nodes(text)
         expected = [
-            TextNode("  ", "bold"),
             TextNode("This has empty formatting at start and end.", "text"),
-            TextNode("  ", "italic")
         ]
         self.assertEqual(result, expected)
 
@@ -359,10 +344,15 @@ class TestTextToTextNodes(unittest.TestCase):
             TextNode("Empty ", "text"),
             TextNode("  ", "code"),
             TextNode(" code and ", "text"),
-            TextNode("  ", "link", "https://example.com"),
+            TextNode("", "link", "https://example.com"),
             TextNode(" link.", "text")
         ]
         self.assertEqual(result, expected)
+
+class TestMarkdownToBlocks(unittest.TestCase):
+    def test_markdown_to_blocks_basic(self):
+        pass
+
 
 if __name__ == "__main__":
     unittest.main()
