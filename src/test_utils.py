@@ -351,7 +351,27 @@ class TestTextToTextNodes(unittest.TestCase):
 
 class TestMarkdownToBlocks(unittest.TestCase):
     def test_markdown_to_blocks_basic(self):
-        pass
+        markdown = """
+This is **bolded** paragraph
+
+This is another paragraph with *italic* text.
+
+* This is a list item
+* This is another list item
+
+# This is a heading
+
+This is a paragraph with a [link](https://www.example.com)
+"""
+        expected = [
+            "This is **bolded** paragraph",
+            "This is another paragraph with *italic* text.",
+            "* This is a list item\n* This is another list item",
+            "# This is a heading",
+            "This is a paragraph with a [link](https://www.example.com)"
+        ]
+        result = utils.markdown_to_blocks(markdown)
+        self.assertEqual(result, expected)
 
 
 if __name__ == "__main__":
