@@ -135,23 +135,13 @@ def split_nodes_links(old_nodes):
                         link_index += 1
     return processed_nodes
 
-
-                # processed_substrings = []
-                # img_text_sequential = []
-                # for i in range (0, len(img_text)):
-                #     img_text_sequential.append(img_text[i][0])
-                #     img_text_sequential.append(img_text[i][1])
-                # split_text = node.text.split(f'![{}]')
-
-
-
-            
-
-#     pass
-
-# def split_nodes_link(old_nodes):
-#     pass
+def text_to_text_nodes(text):
+    nodes = [TextNode(text, "text")]
+    nodes = split_nodes_delimiter(nodes, "`", "code")
+    nodes = split_nodes_delimiter(nodes, "**", "bold")
+    nodes = split_nodes_delimiter(nodes, "*", "italic")
+    nodes = split_nodes_images(nodes)
+    nodes = split_nodes_links(nodes)
+    return nodes
 
 
-
-        

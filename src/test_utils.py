@@ -1,5 +1,5 @@
 import unittest
-from utils import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_images, split_nodes_links
+from utils import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_images, split_nodes_links, text_to_text_nodes
 import utils
 from textnode import TextNode
 
