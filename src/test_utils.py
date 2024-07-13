@@ -318,6 +318,52 @@ class TestTextToTextNodes(unittest.TestCase):
         ]
         self.assertEqual(result, expected)
 
+    def test_empty_formatting_with_whitespace(self):
+        text = "This has empty **   ** formatting with whitespace."
+        result = utils.text_to_text_nodes(text)
+        expected = [
+            TextNode("This has empty ", "text"),
+            TextNode("   ", "bold"),
+            TextNode(" formatting with whitespace.", "text")
+        ]
+        self.assertEqual(result, expected)
+
+    def test_multiple_empty_formatting(self):
+        text = "This has **multiple** empty **** formatting ** ** elements."
+        result = utils.text_to_text_nodes(text)
+        expected = [
+            TextNode("This has ", "text"),
+            TextNode("multiple", "bold"),
+            TextNode(" empty ", "text"),
+            TextNode("", "bold"),
+            TextNode(" formatting ", "text"),
+            TextNode("", "bold"),
+            TextNode(" elements.", "text")
+        ]
+        self.assertEqual(result, expected)
+
+    def test_empty_formatting_at_start_and_end(self):
+        text = "**  **This has empty formatting at start and end.*  *"
+        result = utils.text_to_text_nodes(text)
+        expected = [
+            TextNode("  ", "bold"),
+            TextNode("This has empty formatting at start and end.", "text"),
+            TextNode("  ", "italic")
+        ]
+        self.assertEqual(result, expected)
+
+    def test_empty_code_and_link_formatting(self):
+        text = "Empty `  ` code and [  ](https://example.com) link."
+        result = utils.text_to_text_nodes(text)
+        expected = [
+            TextNode("Empty ", "text"),
+            TextNode("  ", "code"),
+            TextNode(" code and ", "text"),
+            TextNode("  ", "link", "https://example.com"),
+            TextNode(" link.", "text")
+        ]
+        self.assertEqual(result, expected)
+
 if __name__ == "__main__":
     unittest.main()
 
