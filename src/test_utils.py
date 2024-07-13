@@ -391,8 +391,14 @@ class TestBlockToBlockType(unittest.TestCase):
         expected = 'ordered_list_1'
         self.assertEqual(result, expected)
 
+    def test_block_to_block_type_ordered_list_2(self):
+        markdown = "2. Second item"
+        result = block_to_block_type(markdown)
+        expected = 'ordered_list_2'
+        self.assertEqual(result, expected)
+
     def test_block_to_block_type_unclosed_codeblock(self):
-        markdown = "```python\nprint('Hello, World!')"
+        markdown = "```print('Hello, World!')"
         with self.assertRaises(ValueError):
             block_to_block_type(markdown)
 
@@ -409,7 +415,7 @@ class TestBlockToBlockType(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_block_to_block_type_code_block(self):
-        markdown = "```python\nprint('Hello, World!')\n```"
+        markdown = "```print('Hello, World!')```"
         result = block_to_block_type(markdown)
         expected = 'code'
         self.assertEqual(result, expected)

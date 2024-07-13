@@ -50,13 +50,21 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                     raise Exception("Even # of elements post-split, no matching delimiter found")
                 for i in range (0, len(split_text)):
                     if i % 2 == 0:
-                        if split_text[i] != "":
-                            new_node = TextNode(split_text[i], "text")
-                            processed_substrings.append(new_node)
+                        if split_text[i]:  # Only create text nodes for non-empty strings
+                            processed_nodes.append(TextNode(split_text[i], "text"))
                     else:
-                        new_node = TextNode(split_text[i], text_type)
-                        processed_substrings.append(new_node)
-                processed_nodes.extend(processed_substrings)
+                        content = split_text[i] if delimiter == '`' else split_text[i].strip()
+                        if content or delimiter == '`':
+                            processed_nodes.append(TextNode(content, text_type))
+                        # processed_nodes.append(TextNode(split_text[i].strip(), text_type))
+
+                    #     if split_text[i] != "":
+                    #         new_node = TextNode(split_text[i], "text")
+                    #         processed_substrings.append(new_node)
+                    # else:
+                    #     new_node = TextNode(split_text[i], text_type)
+                    #     processed_substrings.append(new_node)
+                # processed_nodes.extend(processed_substrings)
 
     return processed_nodes
 
@@ -97,9 +105,14 @@ def split_nodes_images(old_nodes):
                         node = TextNode(split_text[i], "text")
                         processed_nodes.append(node)
                     else:
-                        node = TextNode(img_text[img_index][0], "image", img_text[img_index][1])
+                        alt_text, url = img_text[img_index]
+                        alt_text = alt_text.strip()  # This removes leading and trailing whitespace
+                        node = TextNode(alt_text, "image", url)
                         processed_nodes.append(node)
                         img_index += 1
+                        # node = TextNode(img_text[img_index][0], "image", img_text[img_index][1])
+                        # processed_nodes.append(node)
+                        # img_index += 1
     return processed_nodes
 
 
@@ -130,9 +143,15 @@ def split_nodes_links(old_nodes):
                         node = TextNode(split_text[i], "text")
                         processed_nodes.append(node)
                     else:
-                        node = TextNode(link_text[link_index][0], "link", link_text[link_index][1])
+                        text, url = link_text[link_index]
+                        text = text.strip()  # This removes leading and trailing whitespace
+                        node = TextNode(text, "link", url)
                         processed_nodes.append(node)
                         link_index += 1
+
+                        # node = TextNode(link_text[link_index][0], "link", link_text[link_index][1])
+                        # processed_nodes.append(node)
+                        # link_index += 1
     return processed_nodes
 
 def text_to_text_nodes(text):
@@ -143,5 +162,38 @@ def text_to_text_nodes(text):
     nodes = split_nodes_images(nodes)
     nodes = split_nodes_links(nodes)
     return nodes
+
+def markdown_to_blocks(markdown):
+    blocks = []
+    lines = markdown.split('\n')
+    for line in lines:
+        stripped = line.strip()
+        if stripped:
+            blocks.append(stripped)
+    return blocks
+
+def block_to_block_type(markdown_block):
+    match markdown_block[0]:
+        case '#':
+            heading_level = min(len(markdown_block) - len(markdown_block.lstrip('#')), 6)
+            return f'H{heading_level}'
+        case '`':
+            if markdown_block.startswith('```'):
+                if markdown_block.endswith('```') and len(markdown_block) > 6:
+                    return 'code'
+                else:
+                    raise ValueError("Code block must start and end with ``` and contain content")
+        case '>':
+            return 'quote'
+        case '-' | '*':
+            return 'unordered_list'
+        case _:
+            if markdown_block[0].isdigit() and markdown_block[1] == '.':
+                return f'ordered_list_{markdown_block[0]}'
+            else:
+                return 'paragraph'
+
+
+
 
 
