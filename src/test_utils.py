@@ -1,5 +1,5 @@
 import unittest
-from utils import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_images, split_nodes_links, text_to_text_nodes
+from utils import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_images, split_nodes_links, text_to_text_nodes, block_to_block_type
 import utils
 from textnode import TextNode
 
@@ -352,26 +352,43 @@ class TestTextToTextNodes(unittest.TestCase):
 class TestMarkdownToBlocks(unittest.TestCase):
     def test_markdown_to_blocks_basic(self):
         markdown = """
-This is **bolded** paragraph
+# This is a heading
 
-This is another paragraph with *italic* text.
+This is a paragraph of text. It has some **bold** and *italic* words inside of it.
 
+* This is the first list item in a list block
 * This is a list item
 * This is another list item
 
-# This is a heading
-
-This is a paragraph with a [link](https://www.example.com)
 """
         expected = [
-            "This is **bolded** paragraph",
-            "This is another paragraph with *italic* text.",
-            "* This is a list item\n* This is another list item",
             "# This is a heading",
-            "This is a paragraph with a [link](https://www.example.com)"
+            "This is a paragraph of text. It has some **bold** and *italic* words inside of it.",
+            "* This is the first list item in a list block",
+            "* This is a list item",
+            "* This is another list item"
         ]
         result = utils.markdown_to_blocks(markdown)
         self.assertEqual(result, expected)
+
+
+class TestBlockToBlockType(unittest.TestCase):
+    def test_block_to_block_type_basic(self):
+        markdown = "### This is a H3"
+        result = block_to_block_type(markdown)
+        expected = 'H3'
+        self.assertEqual(result, expected)
+
+    def test_block_to_block_type_other_type(self):
+        pass
+
+    def test_block_to_block_type_ordered_list(self):
+        pass
+
+    def test_block_to_block_type_unclosed_codeblock(self):
+        pass
+
+
 
 
 if __name__ == "__main__":
