@@ -105,6 +105,21 @@ class TestSplitNodesDelimiter(unittest.TestCase):
         ]
         self.assertEqual(result, expected)
 
+    ## This is not supported
+    # def test_split_nodes_delimiter_italic_first(self):
+    #     nodes = [ TextNode("Normal *italic* normal **bold** normal", "text") ]
+    #     result = split_nodes_delimiter(nodes, "*", "italic")
+    #     result2 = split_nodes_delimiter(result, "**", "bold")
+    #     expected = [
+    #         TextNode("Normal ", "text"),
+    #         TextNode("italic", "italic"),
+    #         TextNode(" normal ", "text"),
+    #         TextNode("bold", "bold"),
+    #         TextNode(" normal", "text")
+    #     ]
+    #     print(f'result2 = {result2}')
+    #     self.assertEqual(result2, expected)
+
 class TestLinkImageExtraction(unittest.TestCase):
     def test_extract_markdown_images(self):
         text = "This is an ![image](https://example.com/image.jpg) in text."
