@@ -5,7 +5,7 @@ from textnode import TextNode
 
 
 def test_text_node_to_html_node():
-    pass
+    pass 
 
 
 class TestSplitNodesDelimiter(unittest.TestCase):
@@ -432,8 +432,6 @@ class TestBlockToBlockType(unittest.TestCase):
         result = block_to_block_type(markdown)
         expected = 'H6'
         self.assertEqual(result, expected)
-
-
 
 
 if __name__ == "__main__":

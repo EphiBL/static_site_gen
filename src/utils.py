@@ -1,15 +1,8 @@
 from leafnode import LeafNode
 from textnode import TextNode
+from htmlnode import HTMLNode
+from parentnode import ParentNode
 import re
-
-TEXT_TYPES = {
-    'text_type_text' : 'text',
-    'text_type_bold' : 'bold',
-    'text_type_italic' : 'italic',
-    'text_type_code' : 'code',
-    'text_type_link' : 'link',
-    'text_type_image' : 'image'
-}
 
 def text_node_to_html_node(text_node):
     match text_node.text_type:
@@ -174,25 +167,37 @@ def markdown_to_blocks(markdown):
 
 def block_to_block_type(markdown_block):
     match markdown_block[0]:
+        # Headings
         case '#':
             heading_level = min(len(markdown_block) - len(markdown_block.lstrip('#')), 6)
             return f'H{heading_level}'
+        # Code blocks
         case '`':
             if markdown_block.startswith('```'):
                 if markdown_block.endswith('```') and len(markdown_block) > 6:
                     return 'code'
                 else:
                     raise ValueError("Code block must start and end with ``` and contain content")
+        # Quote blocks
         case '>':
             return 'quote'
+        # Unordered lists
         case '-' | '*':
             return 'unordered_list'
+        # Ordered lists and paragraphs
         case _:
             if markdown_block[0].isdigit() and markdown_block[1] == '.':
                 return f'ordered_list_{markdown_block[0]}'
             else:
                 return 'paragraph'
 
+def markdown_to_html_node(markdown):
+
+
+
+    div_node = ParentNode('div', children)
+    # return div_node
+    pass
 
 
 
