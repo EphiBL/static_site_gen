@@ -158,12 +158,26 @@ def text_to_text_nodes(text):
 
 def markdown_to_blocks(markdown):
     blocks = []
+    current_block = []
     lines = markdown.split('\n')
-    for line in lines:
+    
+    for i, line in enumerate(lines):
         stripped = line.strip()
-        if stripped:
-            blocks.append(stripped)
-    return blocks
+        
+        if i == 0 and stripped:  # First non-empty line starts a block
+            current_block.append(line)
+        elif stripped == '' and current_block:  # Empty line ends a block
+            blocks.append('\n'.join(current_block))
+            current_block = []
+        elif stripped:  # Non-empty line continues or starts a block
+            current_block.append(line)
+    
+    # Add the last block if there's any content left
+    if current_block:
+        blocks.append('\n'.join(current_block))
+    
+    return blocks 
+
 
 def block_to_block_type(markdown_block):
     match markdown_block[0]:
@@ -187,18 +201,120 @@ def block_to_block_type(markdown_block):
         # Ordered lists and paragraphs
         case _:
             if markdown_block[0].isdigit() and markdown_block[1] == '.':
-                return f'ordered_list_{markdown_block[0]}'
+                return f'ordered_list'
             else:
                 return 'paragraph'
 
+# def markdown_to_html_node(markdown):
+#     md_blocks = markdown_to_blocks(markdown)
+#     md_block_types = []
+
+#     for block in md_blocks:
+#         block_type = block_to_block_type(block)
+#         md_block_types.append(block_type)
+# # I dont think we need to construct a block type list we just
+# # call it for the block we're on when we need it
+
+
 def markdown_to_html_node(markdown):
+    block_types_with_nesting = {'unordered_list', 'ordered_list'}
+    md_blocks = markdown_to_blocks(markdown)
+    parents = []
+
+    for block in md_blocks:
+        block_type = block_to_block_type(block)
+        tag = tag_from_block_type(block_type)
+
+        # parent_node = ParentNode(None, opening_tag, None)
+        children = []
+
+        if block_type not in block_types_with_nesting:
+            text_nodes = parse_block_by_block_type(block, block_type)
+            for text_node in text_nodes:
+                children.append(text_node_to_leaf_node(text_node))
+        elif block_type == 'code':
+            text_node = parse_block_by_block_type(block, block_type)
+            code_parent = ParentNode(text_node, 'code', None)
+            children.append(code_parent)
+        else:
+            list_of_text_nodes = parse_block_by_block_type(block, block_type)
+            for text_nodes in list_of_text_nodes:
+                inline_nodes = []
+                for text_node in text_nodes:
+                    inline_nodes.append(text_node_to_leaf_node(text_node))
+                list_item = ParentNode(inline_nodes, 'li', None)
+                children.append(list_item)
+
+        parent_node = ParentNode(children, tag, None)
+        parents.append(parent_node)
+
+    div_parent = ParentNode(parents, 'div', None)
+    return div_parent
 
 
-
-    div_node = ParentNode('div', children)
-    # return div_node
-    pass
-
-
-
-
+def tag_from_block_type(block_type):
+    if block_type[0] == 'H':
+        return f'h{block_type[1]}'
+    elif block_type == 'paragraph':
+        return 'p'
+    elif block_type == 'code':
+        return 'pre'
+    elif block_type == 'quote':
+        return 'blockquote'
+    elif block_type == 'unordered_list':
+        return 'ul'
+    elif block_type == 'ordered_list':
+        return 'ol'
+        
+def parse_block_by_block_type(block, block_type):
+    if block_type.startswith('H'):
+        stripped = block.lstrip('#')
+        stripped2 = stripped.strip()
+        return [TextNode(stripped2, 'text', None)]
+    elif block_type == 'paragraph':
+        nodes = text_to_text_nodes(block)
+        return nodes
+    elif block_type == 'code':
+        content = block.strip('`')
+        return [TextNode(content, 'code')]
+    elif block_type == 'quote':
+        # Split into lines, remove '>' from each line, and reassemble
+        lines = block.split('\n')
+        stripped_lines = [line.lstrip('>').strip() for line in lines]
+        cleaned_content = '\n'.join(stripped_lines)
+        return [TextNode(cleaned_content, 'quote')]
+    elif block_type == 'unordered_list':
+        list = []
+        items = block.split('\n')
+        for item in items:
+            stripped = item.lstrip('*')
+            stripped2 = stripped.lstrip('-')
+            stripped3 = stripped2.strip()
+            inline_nodes = text_to_text_nodes(stripped3)
+            list.append(inline_nodes)
+        return list
+    elif block_type == 'ordered_list':
+        list = []
+        items = block.split('\n')
+        for item in items:
+            without_number = re.sub(r'^\d+\.', '', item)
+            cleaned = without_number.strip()
+            inline_nodes = text_to_text_nodes(cleaned)
+            list.append(inline_nodes)
+        return list
+    
+def text_node_to_leaf_node(text_node):
+    if text_node.text_type == "text":
+        return LeafNode(text_node.text, None, None)
+    elif text_node.text_type == "bold":
+        return LeafNode(text_node.text, None, "strong")
+    elif text_node.text_type == "italic":
+        return LeafNode(text_node.text, None, "em")
+    elif text_node.text_type == "code":
+        return LeafNode(text_node.text, None, "code")
+    elif text_node.text_type == "link":
+        return LeafNode(text_node.text, {"href": text_node.url}, "a")
+    elif text_node.text_type == "image":
+        return LeafNode("", {"src": text_node.url, "alt": text_node.text}, "img")
+    else:
+        raise ValueError(f"Invalid text type: {text_node.text_type}")

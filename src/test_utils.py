@@ -2,7 +2,8 @@ import unittest
 from utils import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_images, split_nodes_links, text_to_text_nodes, block_to_block_type, markdown_to_html_node
 import utils
 from textnode import TextNode
-from htmlnode import ParentNode
+from parentnode import ParentNode
+from leafnode import LeafNode
 
 
 class TestSplitNodesDelimiter(unittest.TestCase):
@@ -451,21 +452,95 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
         result = markdown_to_html_node(markdown)
         expected = ParentNode(
             [
-                ParentNode([TextNode("This is a heading", "text")], "h1"),
+                ParentNode([LeafNode("This is a heading", None)], "h1"),
                 ParentNode([
-                    TextNode("This is a paragraph of text. It has some ", "text"),
-                    TextNode("bold", "bold"),
-                    TextNode(" and ", "text"),
-                    TextNode("italic", "italic"),
-                    TextNode(" words inside of it.", "text")
+                    LeafNode("This is a paragraph of text. It has some ", None),
+                    LeafNode("bold", None, "strong"),
+                    LeafNode(" and ", None),
+                    LeafNode("italic", None, "em"),
+                    LeafNode(" words inside of it.", None)
                 ], "p"),
                 ParentNode([
-                    ParentNode([TextNode("This is the first list item in a list block", "text")], "li"),
-                    ParentNode([TextNode("This is a list item", "text")], "li"),
-                    ParentNode([TextNode("This is another list item", "text")], "li")
+                    ParentNode([LeafNode("This is the first list item in a list block", None)], "li"),
+                    ParentNode([LeafNode("This is a list item", None)], "li"),
+                    ParentNode([LeafNode("This is another list item", None)], "li")
                 ], "ul")
             ]
-        )
+        , 'div')
+        self.assertEqual(result, expected)
+
+    def test_markdown_to_html_code_inline_in_lists(self):
+        markdown ="""
+### This is a heading
+
+This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+
+* This is the first list *item* in a list block
+* This is a **list** item
+* This is `another` list item
+"""
+        result = markdown_to_html_node(markdown)
+        expected= ParentNode(
+                [
+                    ParentNode([LeafNode("This is a heading", None)], "h3"),
+                    ParentNode([
+                        LeafNode("This is a paragraph of text. It has some ", None),
+                        LeafNode("bold", None, "strong"),
+                        LeafNode(" and ", None),
+                        LeafNode("italic", None, "em"),
+                        LeafNode(" words inside of it.", None)
+                    ], "p"),
+                    ParentNode([
+                        ParentNode([
+                            LeafNode("This is the first list ", None),
+                            LeafNode("item", None, "em"),
+                            LeafNode(" in a list block", None)
+                            ], "li"),
+                        ParentNode([
+                            LeafNode("This is a ", None),
+                            LeafNode("list", None, "strong"),
+                            LeafNode(" item", None)
+                            ], "li"),
+                        ParentNode([
+                            LeafNode("This is ", None),
+                            LeafNode("another", None, "code"),
+                            LeafNode(" list item", None)
+                            ], "li")
+                    ], "ul")
+                ]
+            , 'div')
+        self.assertEqual(result, expected)
+
+    def test_markdown_to_html_node_ordered_list(self):
+        markdown = """
+1. test
+2. **bold**
+3. split **bold** test
+4. split *italic* test
+"""
+        result = markdown_to_html_node(markdown)
+        expected= ParentNode(
+                [
+                    ParentNode([
+                        ParentNode([
+                            LeafNode("test", None),
+                            ], "li"),
+                        ParentNode([
+                            LeafNode("bold", None, "strong"),
+                            ], "li"),
+                        ParentNode([
+                            LeafNode("split ", None),
+                            LeafNode("bold", None, "strong"),
+                            LeafNode(" test", None)
+                            ], "li"),
+                        ParentNode([
+                            LeafNode("split ", None),
+                            LeafNode("italic", None, "em"),
+                            LeafNode(" test", None)
+                            ], "li"),
+                    ], "ol")
+                ]
+            , 'div')
         self.assertEqual(result, expected)
 
 if __name__ == "__main__":
