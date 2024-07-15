@@ -436,7 +436,7 @@ class TestBlockToBlockType(unittest.TestCase):
         expected = 'H6'
         self.assertEqual(result, expected)
 
-class TextMarkdownToHTMLNode(unittest.TestCase):
+class TestMarkdownToHTMLNode(unittest.TestCase):
     def test_markdown_to_html_code_basic(self):
         markdown ="""
 # This is a heading
@@ -448,8 +448,23 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
 * This is another list item
 """
         result = markdown_to_html_node(markdown)
-        expected =
-
+        expected = ParentNode(
+            [
+                ParentNode([TextNode("This is a heading", "text")], "h1"),
+                ParentNode([
+                    TextNode("This is a paragraph of text. It has some ", "text"),
+                    TextNode("bold", "bold"),
+                    TextNode(" and ", "text"),
+                    TextNode("italic", "italic"),
+                    TextNode(" words inside of it.", "text")
+                ], "p"),
+                ParentNode([
+                    ParentNode([TextNode("This is the first list item in a list block", "text")], "li"),
+                    ParentNode([TextNode("This is a list item", "text")], "li"),
+                    ParentNode([TextNode("This is another list item", "text")], "li")
+                ], "ul")
+            ]
+        )
         self.assertEqual(result, expected)
 
 if __name__ == "__main__":
