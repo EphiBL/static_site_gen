@@ -1,11 +1,7 @@
 import unittest
-from utils import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_images, split_nodes_links, text_to_text_nodes, block_to_block_type
+from utils import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_images, split_nodes_links, text_to_text_nodes, block_to_block_type, markdown_to_html_node
 import utils
 from textnode import TextNode
-
-
-def test_text_node_to_html_node():
-    pass 
 
 
 class TestSplitNodesDelimiter(unittest.TestCase):
@@ -364,9 +360,7 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
         expected = [
             "# This is a heading",
             "This is a paragraph of text. It has some **bold** and *italic* words inside of it.",
-            "* This is the first list item in a list block",
-            "* This is a list item",
-            "* This is another list item"
+            "* This is the first list item in a list block\n* This is a list item\n* This is another list item",
         ]
         result = utils.markdown_to_blocks(markdown)
         self.assertEqual(result, expected)
@@ -388,13 +382,22 @@ class TestBlockToBlockType(unittest.TestCase):
     def test_block_to_block_type_ordered_list(self):
         markdown = "1. First item"
         result = block_to_block_type(markdown)
-        expected = 'ordered_list_1'
+        expected = 'ordered_list'
         self.assertEqual(result, expected)
 
     def test_block_to_block_type_ordered_list_2(self):
         markdown = "2. Second item"
         result = block_to_block_type(markdown)
-        expected = 'ordered_list_2'
+        expected = 'ordered_list'
+        self.assertEqual(result, expected)
+
+    def test_block_to_block_type_ordered_list_multiple(self):
+        markdown ="""1. item
+2. item
+3. item
+"""
+        result = block_to_block_type(markdown)
+        expected ='ordered_list'
         self.assertEqual(result, expected)
 
     def test_block_to_block_type_unclosed_codeblock(self):
@@ -433,6 +436,21 @@ class TestBlockToBlockType(unittest.TestCase):
         expected = 'H6'
         self.assertEqual(result, expected)
 
+class TextMarkdownToHTMLNode(unittest.TestCase):
+    def test_markdown_to_html_code_basic(self):
+        markdown ="""
+# This is a heading
+
+This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+
+* This is the first list item in a list block
+* This is a list item
+* This is another list item
+"""
+        result = markdown_to_html_node(markdown)
+        expected =
+
+        self.assertEqual(result, expected)
 
 if __name__ == "__main__":
     unittest.main()
