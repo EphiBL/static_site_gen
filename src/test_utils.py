@@ -543,6 +543,100 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
             , 'div')
         self.assertEqual(result, expected)
 
+#     def test_md_to_html_node_breakdown_1(self):
+#         markdown ="""
+# **I like Tolkien**. Read my [first post here](/majesty) (sorry the link doesn't work yet)"""
+#         result = markdown_to_html_node(markdown)
+#         expected = ParentNode([
+#             ParentNode([
+#                 LeafNode("I like Tolkien", None, "strong"),
+#                 LeafNode(". Read my ", None),
+#                 ParentNode([LeafNode("first post here", None)], "a"),
+#                 LeafNode(" (sorry the link doesn't work yet)", None)
+#             ], "p"),
+#         ], 'div')
+#         print(f'Result: {result}')
+#         print(f'Expected: {expected}')
+#         self.assertEqual(result, expected)
+
+#     def test_markdown_to_html_node_final(self):
+#         markdown = """
+# # Tolkien Fan Club
+
+# **I like Tolkien**. Read my [first post here](/majesty) (sorry the link doesn't work yet)
+
+# > All that is gold does not glitter
+
+# ## Reasons I like Tolkien
+
+# * You can spend years studying the legendarium and still not understand its depths
+# * It can be enjoyed by children and adults alike
+# * Disney *didn't ruin it*
+# * It created an entirely new genre of fantasy
+
+# ## My favorite characters (in order)
+
+# 1. Gandalf
+# 2. Bilbo
+# 3. Sam
+# 4. Glorfindel
+# 5. Galadriel
+# 6. Elrond
+# 7. Thorin
+# 8. Sauron
+# 9. Aragorn
+
+# Here's what `elflang` looks like (the perfect coding language):
+
+# ```
+# func main(){
+#     fmt.Println("Hello, World!")
+# }
+# ```
+# """
+#         result = markdown_to_html_node(markdown)
+#         expected = ParentNode(
+#         [
+#             ParentNode([LeafNode("Tolkien Fan Club", None)], "h1"),
+#             ParentNode([
+#                 LeafNode("I like Tolkien", None, "strong"),
+#                 LeafNode(". Read my ", None),
+#                 ParentNode([LeafNode("first post here", None)], "a"),
+#                 LeafNode(" (sorry the link doesn't work yet)", None)
+#             ], "p"),
+#             ParentNode([LeafNode("All that is gold does not glitter", None)], "blockquote"),
+#             ParentNode([LeafNode("Reasons I like Tolkien", None)], "h2"),
+#             ParentNode([
+#                 ParentNode([LeafNode("You can spend years studying the legendarium and still not understand its depths", None)], "li"),
+#                 ParentNode([LeafNode("It can be enjoyed by children and adults alike", None)], "li"),
+#                 ParentNode([LeafNode("Disney ", None), LeafNode("didn't ruin it", None, "em")], "li"),
+#                 ParentNode([LeafNode("It created an entirely new genre of fantasy", None)], "li")
+#             ], "ul"),
+#             ParentNode([LeafNode("My favorite characters (in order)", None)], "h2"),
+#             ParentNode([
+#                 ParentNode([LeafNode("Gandalf", None)], "li"),
+#                 ParentNode([LeafNode("Bilbo", None)], "li"),
+#                 ParentNode([LeafNode("Sam", None)], "li"),
+#                 ParentNode([LeafNode("Glorfindel", None)], "li"),
+#                 ParentNode([LeafNode("Galadriel", None)], "li"),
+#                 ParentNode([LeafNode("Elrond", None)], "li"),
+#                 ParentNode([LeafNode("Thorin", None)], "li"),
+#                 ParentNode([LeafNode("Sauron", None)], "li"),
+#                 ParentNode([LeafNode("Aragorn", None)], "li")
+#             ], "ol"),
+#             ParentNode([
+#                 LeafNode("Here's what ", None),
+#                 LeafNode("elflang", None, "code"),
+#                 LeafNode(" looks like (the perfect coding language):", None)
+#             ], "p"),
+#             ParentNode([LeafNode("func main(){\n    fmt.Println(\"Hello, World!\")\n}", None)], "pre")
+#         ],
+#         "div"
+#         ) 
+#         print(f'Expected: {expected}')
+#         print(f'Result: {result}')
+#         self.assertEqual(result, expected)
+
 if __name__ == "__main__":
     unittest.main()
 

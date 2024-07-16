@@ -40,6 +40,7 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
             else:
                 processed_substrings = []
                 if len(split_text) % 2 == 0:
+                    print(f'The culprit is: {split_text}')
                     raise Exception("Even # of elements post-split, no matching delimiter found")
                 for i in range (0, len(split_text)):
                     if i % 2 == 0:
@@ -49,16 +50,6 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                         content = split_text[i] if delimiter == '`' else split_text[i].strip()
                         if content or delimiter == '`':
                             processed_nodes.append(TextNode(content, text_type))
-                        # processed_nodes.append(TextNode(split_text[i].strip(), text_type))
-
-                    #     if split_text[i] != "":
-                    #         new_node = TextNode(split_text[i], "text")
-                    #         processed_substrings.append(new_node)
-                    # else:
-                    #     new_node = TextNode(split_text[i], text_type)
-                    #     processed_substrings.append(new_node)
-                # processed_nodes.extend(processed_substrings)
-
     return processed_nodes
 
 # Extract Images
@@ -197,24 +188,16 @@ def block_to_block_type(markdown_block):
             return 'quote'
         # Unordered lists
         case '-' | '*':
-            return 'unordered_list'
+            if markdown_block[1].isspace():
+                return 'unordered_list'
+            else:
+                return 'paragraph'
         # Ordered lists and paragraphs
         case _:
             if markdown_block[0].isdigit() and markdown_block[1] == '.':
                 return f'ordered_list'
             else:
                 return 'paragraph'
-
-# def markdown_to_html_node(markdown):
-#     md_blocks = markdown_to_blocks(markdown)
-#     md_block_types = []
-
-#     for block in md_blocks:
-#         block_type = block_to_block_type(block)
-#         md_block_types.append(block_type)
-# # I dont think we need to construct a block type list we just
-# # call it for the block we're on when we need it
-
 
 def markdown_to_html_node(markdown):
     block_types_with_nesting = {'unordered_list', 'ordered_list'}
@@ -316,5 +299,8 @@ def text_node_to_leaf_node(text_node):
         return LeafNode(text_node.text, {"href": text_node.url}, "a")
     elif text_node.text_type == "image":
         return LeafNode("", {"src": text_node.url, "alt": text_node.text}, "img")
+    elif text_node.text_type == "quote":
+        return LeafNode("text_node.text", None, "quote")
     else:
+        print(f'The culprit is {text_node.text}, of type {text_node.text_type}')
         raise ValueError(f"Invalid text type: {text_node.text_type}")
