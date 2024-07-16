@@ -455,9 +455,9 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
                 ParentNode([LeafNode("This is a heading", None)], "h1"),
                 ParentNode([
                     LeafNode("This is a paragraph of text. It has some ", None),
-                    LeafNode("bold", None, "strong"),
+                    LeafNode("bold", None, "b"),
                     LeafNode(" and ", None),
-                    LeafNode("italic", None, "em"),
+                    LeafNode("italic", None, "i"),
                     LeafNode(" words inside of it.", None)
                 ], "p"),
                 ParentNode([
@@ -485,20 +485,20 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
                     ParentNode([LeafNode("This is a heading", None)], "h3"),
                     ParentNode([
                         LeafNode("This is a paragraph of text. It has some ", None),
-                        LeafNode("bold", None, "strong"),
+                        LeafNode("bold", None, "b"),
                         LeafNode(" and ", None),
-                        LeafNode("italic", None, "em"),
+                        LeafNode("italic", None, "i"),
                         LeafNode(" words inside of it.", None)
                     ], "p"),
                     ParentNode([
                         ParentNode([
                             LeafNode("This is the first list ", None),
-                            LeafNode("item", None, "em"),
+                            LeafNode("item", None, "i"),
                             LeafNode(" in a list block", None)
                             ], "li"),
                         ParentNode([
                             LeafNode("This is a ", None),
-                            LeafNode("list", None, "strong"),
+                            LeafNode("list", None, "b"),
                             LeafNode(" item", None)
                             ], "li"),
                         ParentNode([
@@ -526,16 +526,16 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
                             LeafNode("test", None),
                             ], "li"),
                         ParentNode([
-                            LeafNode("bold", None, "strong"),
+                            LeafNode("bold", None, "b"),
                             ], "li"),
                         ParentNode([
                             LeafNode("split ", None),
-                            LeafNode("bold", None, "strong"),
+                            LeafNode("bold", None, "b"),
                             LeafNode(" test", None)
                             ], "li"),
                         ParentNode([
                             LeafNode("split ", None),
-                            LeafNode("italic", None, "em"),
+                            LeafNode("italic", None, "i"),
                             LeafNode(" test", None)
                             ], "li"),
                     ], "ol")
@@ -549,7 +549,7 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
 #         result = markdown_to_html_node(markdown)
 #         expected = ParentNode([
 #             ParentNode([
-#                 LeafNode("I like Tolkien", None, "strong"),
+#                 LeafNode("I like Tolkien", None, "b"),
 #                 LeafNode(". Read my ", None),
 #                 ParentNode([LeafNode("first post here", None)], "a"),
 #                 LeafNode(" (sorry the link doesn't work yet)", None)
@@ -599,7 +599,7 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
 #         [
 #             ParentNode([LeafNode("Tolkien Fan Club", None)], "h1"),
 #             ParentNode([
-#                 LeafNode("I like Tolkien", None, "strong"),
+#                 LeafNode("I like Tolkien", None, "b"),
 #                 LeafNode(". Read my ", None),
 #                 ParentNode([LeafNode("first post here", None)], "a"),
 #                 LeafNode(" (sorry the link doesn't work yet)", None)
@@ -609,7 +609,7 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
 #             ParentNode([
 #                 ParentNode([LeafNode("You can spend years studying the legendarium and still not understand its depths", None)], "li"),
 #                 ParentNode([LeafNode("It can be enjoyed by children and adults alike", None)], "li"),
-#                 ParentNode([LeafNode("Disney ", None), LeafNode("didn't ruin it", None, "em")], "li"),
+#                 ParentNode([LeafNode("Disney ", None), LeafNode("didn't ruin it", None, "")], "li"),
 #                 ParentNode([LeafNode("It created an entirely new genre of fantasy", None)], "li")
 #             ], "ul"),
 #             ParentNode([LeafNode("My favorite characters (in order)", None)], "h2"),

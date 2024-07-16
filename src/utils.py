@@ -265,7 +265,7 @@ def parse_block_by_block_type(block, block_type):
         lines = block.split('\n')
         stripped_lines = [line.lstrip('>').strip() for line in lines]
         cleaned_content = '\n'.join(stripped_lines)
-        return [TextNode(cleaned_content, 'quote')]
+        return [TextNode(cleaned_content, 'text')]
     elif block_type == 'unordered_list':
         list = []
         items = block.split('\n')
@@ -290,9 +290,9 @@ def text_node_to_leaf_node(text_node):
     if text_node.text_type == "text":
         return LeafNode(text_node.text, None, None)
     elif text_node.text_type == "bold":
-        return LeafNode(text_node.text, None, "strong")
+        return LeafNode(text_node.text, None, "b")
     elif text_node.text_type == "italic":
-        return LeafNode(text_node.text, None, "em")
+        return LeafNode(text_node.text, None, "i")
     elif text_node.text_type == "code":
         return LeafNode(text_node.text, None, "code")
     elif text_node.text_type == "link":

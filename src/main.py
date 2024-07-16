@@ -53,11 +53,33 @@ def generate_page(from_path, template_path, dest_path):
         content_nodes = utils.markdown_to_html_node(markdown)
         content = content_nodes.to_html()
         filled_content = template.replace('{{ Title }}', title).replace('{{ Content }}', content)
-
     os.makedirs(os.path.dirname(dest_path), exist_ok=True)
     with open(dest_path, 'w') as dest_file:
         dest_file.write(filled_content)
 
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    # Ensure the destination directory exists
+    os.makedirs(dest_dir_path, exist_ok=True)
+    
+    # Iterate through all entries in the content directory
+    for entry in os.listdir(dir_path_content):
+        entry_path = os.path.join(dir_path_content, entry)
+        
+        if os.path.isfile(entry_path):
+            # If it's a file, check if it's a markdown file
+            if entry.endswith('.md'):
+                # Generate the corresponding HTML file path
+                html_file = entry[:-3] + '.html'  # Replace .md with .html
+                dest_path = os.path.join(dest_dir_path, html_file)
+                
+                # Generate the page
+                generate_page(entry_path, template_path, dest_path)
+                print(f"Generated: {dest_path}")
+        
+        elif os.path.isdir(entry_path):
+            # If it's a directory, recursively process it
+            new_dest_dir = os.path.join(dest_dir_path, entry)
+            generate_pages_recursive(entry_path, template_path, new_dest_dir)
 
 
 
@@ -65,12 +87,11 @@ def generate_page(from_path, template_path, dest_path):
 
 def main():
     static = '/home/rob/workspace/github.com/Ephi/static_site_gen/static'
-    public = '/home/rob/workspace/github.com/Ephi/static_site_gen/public'
-    content = '/home/rob/workspace/github.com/Ephi/static_site_gen/content/index.md'
+    public_dir = '/home/rob/workspace/github.com/Ephi/static_site_gen/public'
+    content_dir = '/home/rob/workspace/github.com/Ephi/static_site_gen/content'
     template = '/home/rob/workspace/github.com/Ephi/static_site_gen/template.html'
-    clear_and_copy_source_to_destination(static, public)
-    output_file = os.path.join(public, 'index.html')
-    generate_page(content, template, output_file)
+    clear_and_copy_source_to_destination(static, public_dir)
+    generate_pages_recursive(content_dir, template, public_dir)
 
 
 
